@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Új kérdés</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<script src="kozos.js"></script>
+<script>
+const fo = oldal("Új kérdés");
+
+const cim = el("h1", "cim");
+cim.append(el("span", "vekony", "Új"), el("span", "vastag", "kérdés"));
+
+const a = el("input", "mezo");
+a.placeholder = "Első lehetőség";
+const b = el("input", "mezo");
+b.placeholder = "Második lehetőség";
+
+const kat = el("select", "mezo");
+for (const k of KATOK.slice(1)) kat.append(new Option(k, k));
+
+const info = el("p", "kicsi", "Saját kérdések: " + mentes.sajat.length);
+const gomb = el("button", "sotet", "Hozzáadás");
+gomb.onclick = () => {
+  if (!a.value.trim() || !b.value.trim()) {
+    info.textContent = "Mindkét mezőt töltsd ki.";
+    return;
+  }
+  const szazalek = 30 + Math.floor(Math.random() * 41);
+  mentes.sajat.push([kat.value, a.value.trim(), b.value.trim(), szazalek]);
+  ment();
+  a.value = "";
+  b.value = "";
+  info.textContent = "Mentve. Saját kérdések: " + mentes.sajat.length;
+};
+
+fo.append(el("span", "jelveny", "Saját kérdés"), cim, a, b, kat, gomb, info);
+</script>
+</body>
+</html>

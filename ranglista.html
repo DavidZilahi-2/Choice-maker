@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ranglista</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<script src="kozos.js"></script>
+<script>
+const fo = oldal("Ranglista");
+
+const cim = el("h1", "cim");
+cim.append(el("span", "vastag", "Ranglista"));
+const tabla = el("div", "tabla");
+
+if (mentes.rang.length === 0) {
+  tabla.append(el("p", "kicsi", "Még nincs eredmény. Játssz egyet."));
+}
+
+mentes.rang.slice(0, 8).forEach((r, n) => {
+  const sor = el("div", "rang");
+  sor.append(el("span", "halk", n + 1), el("span", "", r.nev), el("strong", "", r.pont));
+  tabla.append(sor);
+});
+
+fo.append(el("span", "jelveny", "Legjobb nyolc"), cim, tabla);
+</script>
+</body>
+</html>

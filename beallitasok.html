@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Beállítások</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<script src="kozos.js"></script>
+<script>
+const fo = oldal("Beállítások");
+
+const cim = el("h1", "cim");
+cim.append(el("span", "vastag", "Beállítások"));
+
+// kulcs: mentes mezője, opciók, felirat
+function valaszto(kulcs, opciok, felirat) {
+  const s = el("select", "mezo");
+  for (const n of opciok) s.append(new Option(n + " " + felirat, n));
+  s.value = mentes[kulcs];
+  s.onchange = () => { mentes[kulcs] = Number(s.value); ment(); };
+  return s;
+}
+
+function torlo(felirat, kulcs) {
+  const g = el("button", "feher", felirat);
+  g.onclick = () => {
+    mentes[kulcs] = [];
+    ment();
+    g.textContent = "Törölve";
+  };
+  return g;
+}
+
+const sor = el("div", "sor");
+sor.append(torlo("Ranglista törlése", "rang"), torlo("Saját kérdések törlése", "sajat"));
+
+fo.append(
+  el("span", "jelveny", "Testreszabás"),
+  cim,
+  valaszto("ido", [8, 12, 20, 30], "mp egy kérdésre"),
+  valaszto("db", [5, 10, 15, 20], "kérdés egy játékban"),
+  sor
+);
+</script>
+</body>
+</html>

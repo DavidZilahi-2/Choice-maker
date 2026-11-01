@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Melyiket választod?</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<script src="kozos.js"></script>
+<script>
+const fo = oldal("Játék");
+let kattintasok = 0;
+
+const counter = el("div", "click-counter", "0 clicks");
+document.body.append(counter);
+
+document.addEventListener("click", () => {
+  kattintasok++;
+  counter.textContent = kattintasok + " clicks";
+});
+let kat = "Mind";
+let lista, i, pont, ido, szamlalo;
+
+function kezdo() {
+  const cim = el("h1", "cim");
+  cim.append(el("span", "vekony", "Melyiket"), el("span", "vastag", "választod?"));
+
+  const nev = el("input", "mezo");
+  nev.placeholder = "Hogy hívnak?";
+  nev.value = mentes.nev;
+  nev.oninput = () => { mentes.nev = nev.value; };
+
+  const chipek = el("div", "sor");
+  for (const k of KATOK) {
+    const g = el("button", k === kat ? "chip aktiv" : "chip", k);
+    g.onclick = () => { kat = k; kezdo(); };
+    chipek.append(g);
+  }
+
+  const start = el("button", "sotet", "Kezdés");
+  start.onclick = () => {
+    mentes.nev = nev.value.trim() || "Névtelen";
+    ment();
+    jatek();
+  };
+
+  fo.replaceChildren(el("span", "jelveny",), cim, nev, chipek, start);
+}
+
+function jatek() {
+  lista = mind()
+    .filter((q) => kat === "Mind" || q[0] === kat)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, mentes.db);
+  i = 0;
+  pont = 0;
+  kerdes();
+}
+
+function kerdes() {
+  const [k, a, b, pa] = lista[i];
+  ido = mentes.ido;
+
+  const idoSzoveg = el("p", "ido", ido + " mp");
+  const toltes = el("div", "toltes");
+  const sav = el("div", "sav");
+  sav.append(toltes);
+
+  const gombok = [a, b].map((szoveg, n) => {
+    const g = el("button", "kartya k" + n);
+    g.append(el("span", "szoveg", szoveg), el("span", "szazalek"));
+    g.onclick = () => valaszol(n);
+    return g;
+  });
+  const kartyak = el("div", "kartyak");
+  kartyak.append(...gombok);
+
+  const uzenet = el("p", "uzenet");
+  const tovabb = el("button", "sotet", i + 1 === lista.length ? "Eredmény" : "Tovább");
+  tovabb.hidden = true;
+  tovabb.onclick = () => {
+    i++;
+    if (i < lista.length) kerdes();
+    else vege();
+  };
+
+  fo.replaceChildren(el("span", "jelveny", `${i + 1} / ${lista.length}  ·  ${k}  ·  ${pont} pont`), idoSzoveg, sav, kartyak, uzenet, tovabb);
+
+  clearInterval(szamlalo);
+  szamlalo = setInterval(() => {
+    ido -= 0.1;
+    toltes.style.width = (ido / mentes.ido) * 100 + "%";
+    idoSzoveg.textContent = Math.max(ido, 0).toFixed(1) + " mp";
+    if (ido <= 0) valaszol(-1);
+  }, 100);
+
+  function valaszol(n) {
+    clearInterval(szamlalo);
+    gombok.forEach((g, m) => {
+      g.disabled = true;
+      g.querySelector(".szazalek").textContent = (m === 0 ? pa : 100 - pa) + "%";
+    });
+
+    if (n < 0) {
+      uzenet.textContent = "Lejárt az idő.";
+    } else {
+      gombok[n].classList.add("enyem");
+      const egyezik = (n === 0 ? pa : 100 - pa) >= 50;
+      pont += Math.round(ido) + (egyezik ? 10 : 0);
+    }
+    tovabb.hidden = false;
+  }
+}
+
+function vege() {
+  mentes.rang.push({ nev: mentes.nev, pont: pont });
+  mentes.rang.sort((x, y) => y.pont - x.pont);
+  mentes.rang = mentes.rang.slice(0, 20);
+  ment();
+
+  const cim = el("h1", "cim");
+  cim.append(el("span", "vekony", "Vége!"), el("span", "vastag", pont + " pont"));
+
+  const ujra = el("button", "sotet", "Újra");
+  ujra.onclick = kezdo;
+  const rang = el("a", "feher", "Ranglista");
+  rang.href = "ranglista.html";
+  const sor = el("div", "sor");
+  sor.append(ujra, rang);
+
+  fo.replaceChildren(el("span", "jelveny", mentes.nev), cim, sor);
+}
+
+kezdo();
+</script>
+</body>
+</html>
