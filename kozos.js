@@ -1,9 +1,8 @@
 // ---------- Állandók ----------
 const KATOK = ["Mind", "Vicces", "Gáz", "Dilemma"];
 const LINKEK = [["Játék", "index.html"], ["Ranglista", "ranglista.html"], ["Új kérdés", "ujkerdes.html"], ["Beállítások", "beallitasok.html"]];
-const KULCS = "dontesjatek_egyszeru";
+const KULCS = "ChoiceMaker";
 
-// [kategória, első lehetőség, második lehetőség, az elsőt választók %-a]
 const KERDESEK = [
   ["Vicces", "Egész életedben csak suttogni tudsz", "Egész életedben csak kiabálni tudsz", 54],
   ["Vicces", "Egy lóméretű kacsa üldöz", "Száz kacsaméretű ló üldöz", 36],
@@ -37,14 +36,14 @@ const KERDESEK = [
   ["Dilemma", "Visszamész a múltba tíz évet", "Előre látsz a jövőbe tíz évet", 42]
 ];
 
-// ---------- Mentés ----------
+// ---------- Mentes ----------
 const alap = { nev: "", ido: 12, db: 10, rang: [], sajat: [] };
 const mentes = Object.assign({}, alap, JSON.parse(localStorage.getItem(KULCS) || "{}"));
 function ment() {
   localStorage.setItem(KULCS, JSON.stringify(mentes));
 }
 
-// ---------- Segédek ----------
+// ---------- Segito izebizek ----------
 function el(tag, osztaly = "", szoveg = "") {
   const e = document.createElement(tag);
   e.className = osztaly;
